@@ -1,5 +1,6 @@
 package com.guigs.EntradaAtletas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +16,13 @@ import java.util.List;
 public class Treinador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
+
     private String nome;
     private String equipe;
-    private boolean presente;
+    private boolean presente = false;
 
     @ManyToMany(mappedBy = "treinadores")
+    @JsonIgnore
     private List<Atleta> atletas;
 }

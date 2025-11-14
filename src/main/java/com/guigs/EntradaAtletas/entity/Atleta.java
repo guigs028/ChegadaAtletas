@@ -15,11 +15,13 @@ import java.util.List;
 public class Atleta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
+
     private String nome;
-    private String equipe;
+    private Integer numeroLuta;
     private String cor;
-    private boolean presente;
+    private String equipe;
+    private boolean presente = false;
 
     @ManyToMany
     @JoinTable(
