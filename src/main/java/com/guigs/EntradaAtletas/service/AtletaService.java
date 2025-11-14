@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ public class AtletaService {
     }
 
     public List<AtletaDTO> listarTodos() {
-        return atletaRepository.findAllByOrderByNumeroLuta().stream()
+        return atletaRepository.findAllByOrderByNumeroLutaAscIdAsc().stream()
                 .map(this::converterParaDTO)
                 .collect(Collectors.toList());
     }
@@ -71,9 +72,9 @@ public class AtletaService {
         if (busca != null && !busca.trim().isEmpty()) {
             atletas = atletaRepository.findByNomeOrTreinadorNome(busca);
         } else if (presente != null) {
-            atletas = atletaRepository.findByPresenteOrderByNumeroLuta(presente);
+            atletas = atletaRepository.findByPresenteOrderByNumeroLutaAscIdAsc(presente);
         } else {
-            atletas = atletaRepository.findAllByOrderByNumeroLuta();
+            atletas = atletaRepository.findAllByOrderByNumeroLutaAscIdAsc();
         }
 
         // Filtrar por presença se especificado e há busca
@@ -83,7 +84,10 @@ public class AtletaService {
                     .collect(Collectors.toList());
         }
 
+        // GARANTIR ordenação por numeroLuta e ID (para manter ordem estável)
         return atletas.stream()
+                .sorted(Comparator.comparing(Atleta::getNumeroLuta)
+                        .thenComparing(Atleta::getId))
                 .map(this::converterParaDTO)
                 .collect(Collectors.toList());
     }
@@ -94,6 +98,11 @@ public class AtletaService {
             throw new RuntimeException("Atleta não encontrado");
         }
         atletaRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deletarTodos() {
+        atletaRepository.deleteAll();
     }
 
     @Transactional

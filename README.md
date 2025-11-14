@@ -1,224 +1,279 @@
-# Sistema de Entrada de Atletas 🥋
+# 🥊 MFC - Master Fighting Championship
+## Sistema de Controle de Presença de Atletas
 
-Sistema web para controle de presença de atletas e treinadores em eventos de artes marciais.
-
-## 🚀 Tecnologias Utilizadas
-
-- **Backend**: Spring Boot 3.5.7
-- **Banco de Dados**: PostgreSQL
-- **Frontend**: HTML, CSS, JavaScript (Vanilla)
-- **Persistência**: JPA/Hibernate
-- **Validação**: Bean Validation
-
-## 📋 Funcionalidades
-
-### Interface Principal
-- Busca em tempo real por nome de atleta ou treinador
-- Filtros: Todos / Presentes / Ausentes
-- Estatísticas em tempo real (Total, Presentes, Ausentes)
-- Botão "Cadastrar Atleta" abre modal
-
-### Modal de Cadastro de Atleta
-- Formulário com todos os dados do atleta
-- Nome, número da luta, cor, equipe
-- Lista de treinadores com checkbox (selecione 1 ou 2)
-- Botão "Novo Treinador" dentro do modal
-- Validação de 1 a 2 treinadores obrigatório
-- Limite automático de seleção (máx 2)
-
-### Modal de Cadastro de Treinador
-- Abre dentro do modal de atleta
-- Nome e equipe
-- Ao cadastrar, atualiza lista automaticamente
-- Fecha e retorna ao modal de atleta
-
-### Lista de Atletas
-- Cards com todas as informações
-- Número da luta, cor, equipe
-- Sublista com treinadores do atleta
-- Status de presença visual (verde/vermelho)
-- Botão para marcar/desmarcar presença
-- Status dos treinadores visível
-
-## 🔧 Configuração e Instalação
-
-### Pré-requisitos
-- Java 17 ou superior
-- PostgreSQL instalado e rodando
-- Maven (incluído via Maven Wrapper)
-
-### Configuração do Banco de Dados
-
-1. Crie um banco de dados PostgreSQL:
-```sql
-CREATE DATABASE EntradaAtletas;
-```
-
-2. Crie um usuário (ou use o existente):
-```sql
-CREATE USER entradaAtletas WITH PASSWORD 'Guilherme028!';
-GRANT ALL PRIVILEGES ON DATABASE EntradaAtletas TO entradaAtletas;
-```
-
-3. As configurações estão em `src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/EntradaAtletas
-spring.datasource.username=entradaAtletas
-spring.datasource.password=Guilherme028!
-spring.jpa.hibernate.ddl-auto=update
-```
-
-**IMPORTANTE**: Altere a senha no arquivo `application.properties` conforme sua configuração.
-
-### Executando a Aplicação
-
-#### Windows:
-```powershell
-.\mvnw.cmd spring-boot:run
-```
-
-#### Linux/Mac:
-```bash
-./mvnw spring-boot:run
-```
-
-### Acessando o Sistema
-
-Após iniciar a aplicação, acesse:
-- **Frontend**: http://localhost:8080
-- **API REST**: http://localhost:8080/api
-
-## 📡 Endpoints da API
-
-### Treinadores
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | /api/treinadores | Listar todos |
-| GET | /api/treinadores/{id} | Buscar por ID |
-| GET | /api/treinadores/buscar?nome={nome} | Buscar por nome |
-| POST | /api/treinadores | Criar treinador |
-| PATCH | /api/treinadores/{id}/presenca | Marcar/desmarcar presença |
-
-### Atletas
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | /api/atletas | Listar todos |
-| GET | /api/atletas?busca={busca} | Buscar por nome ou treinador |
-| GET | /api/atletas?presente={true/false} | Filtrar por presença |
-| GET | /api/atletas/{id} | Buscar por ID |
-| POST | /api/atletas | Criar atleta |
-| PUT | /api/atletas/{id} | Atualizar atleta |
-| DELETE | /api/atletas/{id} | Deletar atleta |
-| PATCH | /api/atletas/{id}/presenca | Marcar/desmarcar presença |
-
-## 📝 Exemplos de Uso da API
-
-### Criar Treinador
-```json
-POST /api/treinadores
-{
-  "nome": "João Silva",
-  "equipe": "Academia Alpha"
-}
-```
-
-### Criar Atleta
-```json
-POST /api/atletas
-{
-  "nome": "Maria Santos",
-  "numeroLuta": 15,
-  "cor": "Azul",
-  "equipe": "Academia Alpha",
-  "treinadoresIds": [1, 2]
-}
-```
-
-### Buscar Atletas com Filtros
-```
-GET /api/atletas?busca=Maria&presente=true
-```
-
-## 🎨 Estrutura do Projeto
-
-```
-src/
-├── main/
-│   ├── java/
-│   │   └── com/guigs/EntradaAtletas/
-│   │       ├── controller/       # Controllers REST
-│   │       ├── dto/               # Data Transfer Objects
-│   │       ├── entity/            # Entidades JPA
-│   │       ├── exception/         # Exception handlers
-│   │       ├── repository/        # Repositories
-│   │       └── service/           # Lógica de negócio
-│   └── resources/
-│       ├── static/                # Frontend (HTML, CSS, JS)
-│       └── application.properties # Configurações
-```
-
-## 🎯 Fluxo de Uso
-
-1. **Acesse o sistema em http://localhost:8080**
-
-2. **Cadastrar primeiro atleta:**
-   - Clique no botão "➕ Cadastrar Atleta"
-   - Um modal se abrirá
-   - Se não houver treinadores, clique em "➕ Novo Treinador"
-   - Cadastre o treinador (nome e equipe)
-   - O modal fecha e a lista de treinadores atualiza
-   - Selecione 1 ou 2 treinadores (checkbox)
-   - Preencha os dados do atleta
-   - Clique em "Cadastrar Atleta"
-
-3. **Visualizar atletas:**
-   - A lista mostra todos os atletas cadastrados
-   - Cada card mostra: número da luta, cor, equipe
-   - Abaixo aparecem os treinadores do atleta
-   - Status de presença visível (verde = presente, vermelho = ausente)
-
-4. **Marcar presença:**
-   - Clique em "Marcar Presente" no card do atleta
-   - O status muda automaticamente
-
-5. **Buscar e filtrar:**
-   - Use a caixa de busca para encontrar atleta ou treinador
-   - Use os botões: Todos / Presentes / Ausentes
-
-## 🔒 Validações
-
-- **Atleta**: Nome, número da luta, cor e equipe são obrigatórios
-- **Atleta**: Deve ter entre 1 e 2 treinadores
-- **Treinador**: Nome e equipe são obrigatórios
-
-## 🛠️ Desenvolvimento
-
-### Compilar o projeto
-```bash
-.\mvnw.cmd clean compile
-```
-
-### Executar testes
-```bash
-.\mvnw.cmd test
-```
-
-### Gerar JAR
-```bash
-.\mvnw.cmd clean package
-```
-
-## 📄 Licença
-
-Este projeto é de uso livre para fins educacionais.
-
-## 👨‍💻 Desenvolvido por
-
-Guilherme - Estagiário aprendendo Spring Boot
+Sistema web desenvolvido para o evento Master Fighting Championship, permitindo o cadastro e controle de presença de atletas e treinadores.
 
 ---
 
-**Bons treinos! 🥋**
+## 🎯 Funcionalidades
+
+✅ **Cadastro de Atletas**
+- Nome, número da luta, equipe e cor
+- Associação com até 2 treinadores
+- Controle de presença individual
+
+✅ **Cadastro de Treinadores**
+- Nome e equipe
+- Controle de presença
+- Vínculo com múltiplos atletas
+
+✅ **Gerenciamento**
+- Listagem ordenada por número de luta
+- Filtros: Todos / Presentes / Ausentes
+- Busca por nome de atleta ou treinador
+- Exclusão individual ou em massa
+
+✅ **Estatísticas em Tempo Real**
+- Total de atletas cadastrados
+- Atletas presentes
+- Atletas ausentes
+
+---
+
+## 🛠️ Tecnologias
+
+### Backend:
+- **Java 17**
+- **Spring Boot 3.5.7**
+  - Spring Data JPA
+  - Spring Web
+  - Spring Validation
+- **PostgreSQL** (banco de dados)
+- **Flyway** (migrations)
+- **Lombok** (redução de código boilerplate)
+
+### Frontend:
+- **HTML5** + **CSS3** + **JavaScript**
+- Design responsivo
+- Identidade visual MFC (preto, dourado)
+
+### DevOps:
+- **Docker** + **Docker Compose**
+- **Maven** (build)
+
+---
+
+## 🚀 Como Executar Localmente
+
+### Pré-requisitos:
+- Java 17+
+- PostgreSQL 16+
+- Maven 3.9+
+
+### 1. Clonar Repositório:
+```bash
+git clone https://github.com/SEU_USUARIO/EntradaAtletas.git
+cd EntradaAtletas
+```
+
+### 2. Configurar Banco de Dados:
+```bash
+# Criar banco no PostgreSQL
+createdb EntradaAtletas
+```
+
+### 3. Configurar application.properties:
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/EntradaAtletas
+spring.datasource.username=postgres
+spring.datasource.password=SUA_SENHA
+```
+
+### 4. Executar:
+```bash
+# Com Maven
+./mvnw spring-boot:run
+
+# Ou no Windows
+mvnw.cmd spring-boot:run
+```
+
+### 5. Acessar:
+```
+http://localhost:8080
+```
+
+---
+
+## 🐳 Executar com Docker
+
+### Opção mais fácil (tudo incluído):
+```bash
+# Iniciar aplicação + banco de dados
+docker-compose up -d --build
+
+# Ver logs
+docker-compose logs -f app
+
+# Parar
+docker-compose down
+```
+
+### Acessar:
+```
+http://localhost:8080
+```
+
+---
+
+## 📦 Deploy em Produção
+
+Consulte o arquivo **[DEPLOY.md](./DEPLOY.md)** para instruções detalhadas de deploy em:
+- ✅ **Render** (grátis, recomendado)
+- ✅ **Railway** (grátis com limites)
+- 💰 **Heroku**
+- 🖥️ **VPS/Servidor Próprio**
+
+### Deploy Rápido no Render (5 minutos):
+1. Faça push do código no GitHub
+2. Crie conta no [Render.com](https://render.com)
+3. Crie PostgreSQL (Free)
+4. Crie Web Service do seu repo GitHub
+5. Configure variáveis de ambiente
+6. Deploy automático! 🎉
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+EntradaAtletas/
+├── src/
+│   ├── main/
+│   │   ├── java/com/guigs/EntradaAtletas/
+│   │   │   ├── controller/      # Controllers REST
+│   │   │   ├── entity/          # Entidades JPA
+│   │   │   ├── repository/      # Repositórios
+│   │   │   └── service/         # Lógica de negócio
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── application-prod.properties
+│   │       ├── db/migration/    # Migrations Flyway
+│   │       └── static/          # Frontend (HTML/CSS/JS)
+│   └── test/                    # Testes
+├── Dockerfile                   # Build Docker
+├── docker-compose.yml           # Orquestração local
+├── render.yaml                  # Config Render
+├── Procfile                     # Config Heroku
+├── pom.xml                      # Dependências Maven
+├── DEPLOY.md                    # Guia de deploy
+└── README.md                    # Este arquivo
+```
+
+---
+
+## 🎨 Identidade Visual
+
+O sistema segue a identidade visual do **Master Fighting Championship**:
+- **Preto** (#000000) - Background principal
+- **Dourado** (#c9a961) - Destaques e ações importantes
+- **Cinza escuro** (#0a0a0a, #111111) - Cards e containers
+
+---
+
+## 📊 API Endpoints
+
+### Atletas:
+- `GET /api/atletas` - Listar todos
+- `GET /api/atletas/{id}` - Buscar por ID
+- `POST /api/atletas` - Criar atleta
+- `PUT /api/atletas/{id}/presenca` - Atualizar presença
+- `DELETE /api/atletas/{id}` - Deletar atleta
+- `DELETE /api/atletas` - Deletar todos
+
+### Treinadores:
+- `GET /api/treinadores` - Listar todos
+- `POST /api/treinadores` - Criar treinador
+- `PUT /api/treinadores/{id}/presenca` - Atualizar presença
+- `DELETE /api/treinadores/{id}` - Deletar treinador
+
+### Estatísticas:
+- `GET /api/atletas/stats` - Estatísticas de presença
+
+---
+
+## 🔐 Segurança
+
+⚠️ **IMPORTANTE**: Nunca commite senhas ou credenciais no Git!
+
+- Use variáveis de ambiente em produção
+- `.gitignore` já configurado para ignorar arquivos sensíveis
+- `application-prod.properties` usa variáveis de ambiente
+
+---
+
+## 🧪 Testes
+
+```bash
+# Executar todos os testes
+./mvnw test
+
+# Executar com coverage
+./mvnw clean test jacoco:report
+```
+
+---
+
+## 📝 Migrations do Banco
+
+As migrations são gerenciadas pelo **Flyway** e estão em:
+```
+src/main/resources/db/migration/
+├── V1__create_table_treinador.sql
+└── V2__create_table_atleta.sql
+```
+
+Flyway aplica automaticamente ao iniciar a aplicação.
+
+---
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch: `git checkout -b feature/nova-funcionalidade`
+3. Commit: `git commit -m 'Adiciona nova funcionalidade'`
+4. Push: `git push origin feature/nova-funcionalidade`
+5. Abra um Pull Request
+
+---
+
+## 📄 Licença
+
+Este projeto é de uso interno do **Master Fighting Championship**.
+
+---
+
+## 👤 Autor
+
+**Guilherme** - Desenvolvedor
+
+---
+
+## 🎯 Roadmap
+
+- [ ] Autenticação de usuários
+- [ ] Exportação para Excel/PDF
+- [ ] Notificações em tempo real
+- [ ] App mobile
+- [ ] Integração com sistema de lutas
+
+---
+
+## 🐛 Reportar Bugs
+
+Encontrou um bug? Abra uma [issue](https://github.com/SEU_USUARIO/EntradaAtletas/issues) descrevendo:
+- O que aconteceu
+- O que era esperado
+- Passos para reproduzir
+- Screenshots (se aplicável)
+
+---
+
+## 📞 Suporte
+
+Para suporte durante eventos MFC, entre em contato com a equipe técnica.
+
+---
+
+**Desenvolvido com ❤️ para o Master Fighting Championship** 🥊
 

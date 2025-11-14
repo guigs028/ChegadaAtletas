@@ -48,5 +48,16 @@ public class TreinadorController {
         List<TreinadorDTO> treinadores = treinadorService.buscarPorNome(nome);
         return ResponseEntity.ok(treinadores);
     }
-}
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarTreinador(@PathVariable Long id) {
+        treinadorService.deletarTreinador(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/limpar")
+    public ResponseEntity<Void> deletarTodos() {
+        treinadorService.deletarTodos();
+        return ResponseEntity.noContent().build();
+    }
+}

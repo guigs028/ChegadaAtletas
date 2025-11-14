@@ -58,5 +58,10 @@ public class AtletaController {
         AtletaDTO atleta = atletaService.marcarPresenca(id);
         return ResponseEntity.ok(atleta);
     }
-}
 
+    @DeleteMapping("/limpar")
+    public ResponseEntity<Void> deletarTodos() {
+        atletaService.deletarTodos();
+        return ResponseEntity.noContent().build();
+    }
+}

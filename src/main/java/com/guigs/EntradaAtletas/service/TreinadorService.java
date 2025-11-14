@@ -55,6 +55,19 @@ public class TreinadorService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deletarTreinador(Long id) {
+        if (!treinadorRepository.existsById(id)) {
+            throw new RuntimeException("Treinador não encontrado");
+        }
+        treinadorRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deletarTodos() {
+        treinadorRepository.deleteAll();
+    }
+
     private TreinadorDTO converterParaDTO(Treinador treinador) {
         return new TreinadorDTO(
                 treinador.getId(),
@@ -64,4 +77,3 @@ public class TreinadorService {
         );
     }
 }
-

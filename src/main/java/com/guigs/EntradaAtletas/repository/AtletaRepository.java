@@ -10,22 +10,22 @@ import java.util.List;
 @Repository
 public interface AtletaRepository extends JpaRepository<Atleta, Long> {
 
-    // Buscar todos ordenado por número da luta
-    List<Atleta> findAllByOrderByNumeroLuta();
+    // Buscar todos ordenado por número da luta e ID
+    List<Atleta> findAllByOrderByNumeroLutaAscIdAsc();
 
-    // Buscar por nome (case insensitive) ordenado por número da luta
-    List<Atleta> findByNomeContainingIgnoreCaseOrderByNumeroLuta(String nome);
+    // Buscar por nome (case insensitive) ordenado por número da luta e ID
+    List<Atleta> findByNomeContainingIgnoreCaseOrderByNumeroLutaAscIdAsc(String nome);
 
-    // Buscar por status de presença ordenado por número da luta
-    List<Atleta> findByPresenteOrderByNumeroLuta(boolean presente);
+    // Buscar por status de presença ordenado por número da luta e ID
+    List<Atleta> findByPresenteOrderByNumeroLutaAscIdAsc(boolean presente);
 
     // Buscar atletas por nome do treinador
-    @Query("SELECT a FROM Atleta a JOIN a.treinadores t WHERE LOWER(t.nome) LIKE LOWER(CONCAT('%', :nomeTreinador, '%')) ORDER BY a.numeroLuta")
+    @Query("SELECT a FROM Atleta a JOIN a.treinadores t WHERE LOWER(t.nome) LIKE LOWER(CONCAT('%', :nomeTreinador, '%')) ORDER BY a.numeroLuta, a.id")
     List<Atleta> findByTreinadorNome(@Param("nomeTreinador") String nomeTreinador);
 
     // Buscar por nome ou treinador
     @Query("SELECT DISTINCT a FROM Atleta a LEFT JOIN a.treinadores t WHERE " +
            "LOWER(a.nome) LIKE LOWER(CONCAT('%', :busca, '%')) OR " +
-           "LOWER(t.nome) LIKE LOWER(CONCAT('%', :busca, '%')) ORDER BY a.numeroLuta")
+           "LOWER(t.nome) LIKE LOWER(CONCAT('%', :busca, '%')) ORDER BY a.numeroLuta, a.id")
     List<Atleta> findByNomeOrTreinadorNome(@Param("busca") String busca);
 }
