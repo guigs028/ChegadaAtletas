@@ -1115,7 +1115,8 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:8080/api';
+        // Substituir base fixa de localhost por caminho relativo para funcionar em produção (Render) e local
+        const API_URL = '/api';
         let atletasData = [];
         let treinadoresData = [];
         let currentFilter = null;
